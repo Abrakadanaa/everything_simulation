@@ -4,7 +4,7 @@ import codedraw.CodeDraw;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("git test");
+        System.out.println("git gut test");
         int x = 0;
         try (CodeDraw cd = new CodeDraw(400, 400)) {
             cd.show();
