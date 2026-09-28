@@ -10,8 +10,8 @@ public class Ships {
     public static int[] shipyard() {
         //define ship details
         int[] ship = new int[3];
-        int length = (int) (Math.random() * 8) + 1;
-        int width = (int) (Math.random() * 2) + 1;
+        int length = (int) (Math.random() * 13) + 1;
+        int width = (int) (Math.random() * 4) + 1;
         int direction = (int) (Math.random() * 4);
 
         //fill array:
@@ -34,8 +34,21 @@ public class Ships {
     }
 
     public static boolean marineControl_says_aye(int[] ship, int[] ship_coordinates, int[][] ocean_coordinates) {
-        boolean aye = true;
-        return aye;
+        int openWater = ocean_coordinates[ship_coordinates[0]][ship_coordinates[1]];
+        int x = 0;
+        int y = 1;
+        int length = 0;
+        int width = 1;
+
+        if (openWater != 0) {
+            return false;
+        }
+        if (ship_coordinates[x] - ship[length] < 0) {return false;}
+        if (ship_coordinates[y] - ship[length] < 0) {return false;}
+        if (ship_coordinates[x] + ship[length] >= ocean_coordinates.length) {return false;}
+        if (ship_coordinates[y] + ship[length] >= ocean_coordinates[0].length) {return false;}
+
+        return true;
     }
 
     public static void throw_ships_into_ocean(int[][] ocean) {
@@ -44,8 +57,8 @@ public class Ships {
         while (keep_throwing_ships_at_the_ocean) {
             int[] ship = shipyard();
             int attempt = 0;
-            boolean succesful = false;
-            while (attempt < 10 && !succesful) {
+            boolean successful = false;
+            while (attempt < 10 && !successful) {
                 int[] ship_coordinates = ship_coordinates(); // x,y
                 boolean aye = marineControl_says_aye(ship, ship_coordinates, ocean);
                 if (aye) {
@@ -71,26 +84,30 @@ public class Ships {
                         for (int j = 0; j <= ship[1]; j++) {
                             switch (ship[2]) {
                                 case 0 -> {
-                                    ocean[ship_coordinates[0] + i][ship_coordinates[1] + j] = shipcounter;
+                                    out_of_bounds(ocean, ship_coordinates[0] + i, ship_coordinates[1] + j, shipcounter);
                                 }
                                 case 1 -> {
-                                    ocean[ship_coordinates[0] - j][ship_coordinates[1] + i] = shipcounter;
+                                    out_of_bounds(ocean, ship_coordinates[0] - j, ship_coordinates[1] + i, shipcounter);
                                 }
                                 case 2 -> {
-                                    ocean[ship_coordinates[0] - i][ship_coordinates[1] - j] = shipcounter;
+                                    out_of_bounds(ocean, ship_coordinates[0] - i, ship_coordinates[1] - j, shipcounter);
                                 }
                                 case 3 -> {
-                                    ocean[ship_coordinates[0] + j][ship_coordinates[1] - i] = shipcounter;
+                                    out_of_bounds(ocean, ship_coordinates[0] + j, ship_coordinates[1] - i, shipcounter);
                                 }
                             }
                         }
                     }
-                    System.out.println(ocean);
-                    System.out.println(ship);
-                    System.out.println(shipcounter);
-                    //succesful = true;
-                    //keep_throwing_ships_at_the_ocean = false;
+                    successful = true;
+                    if (successful) {
+                        shipcounter++;
                     }
+                }
+                attempt++;
+                if (attempt >= 10) {
+                    keep_throwing_ships_at_the_ocean = false;
+                    System.out.println(shipcounter + " " + "ships sailing");
+                }
             }
         }
     }
