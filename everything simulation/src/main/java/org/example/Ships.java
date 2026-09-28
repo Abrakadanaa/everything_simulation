@@ -10,8 +10,8 @@ public class Ships {
     public static int[] shipyard() {
         //define ship details
         int[] ship = new int[3];
-        int length = (int) (Math.random() * 8) + 1;
-        int width = (int) (Math.random() * 2) + 1;
+        int length = (int) (Math.random() * 15) + 1;
+        int width = (int) (Math.random() * 4) + 1;
         int direction = (int) (Math.random() * 4);
 
         //fill array:
@@ -45,7 +45,46 @@ public class Ships {
             return false;
         }
 
+        for (int i = 0; i <= ship[0]; i++) {
+            for (int j = 0; j <= ship[1]; j++) {
+
+                int is_x_safe = 0;
+                int is_y_free = 0;
+
+                switch (ship[direction]) {
+                    case 0 -> {
+                        is_x_safe = ship_coordinates[x] + i;
+                        is_y_free = ship_coordinates[y] + j;
+                    }
+                    case 1 -> {
+                        is_x_safe = ship_coordinates[x] - j;
+                        is_y_free = ship_coordinates[y] + i;
+                    }
+                    case 2 -> {
+                        is_x_safe = ship_coordinates[x] - i;
+                        is_y_free = ship_coordinates[y] - j;
+                    }
+                    case 3 -> {
+                        is_x_safe = ship_coordinates[x] + j;
+                        is_y_free = ship_coordinates[y] - i;
+                    }
+                }
+
+                if (is_x_safe < 0 || is_x_safe >= ocean_coordinates.length || is_y_free < 0 || is_y_free >= ocean_coordinates[0].length) {
+                    return false;
+                }
+
+                if (ocean_coordinates[is_x_safe][is_y_free] != 0) {
+                    return false;
+                }
+
+            }
+        }
+
+        /*
+
         //check if coordinates and length are okay:
+
 
         //0°:
         if (ship_coordinates[x] + ship[length] >= ocean_coordinates.length) {
@@ -89,7 +128,7 @@ public class Ships {
             return false;
         }
 
-        /*switch (ship[direction]) {
+        switch (ship[direction]) {
             case 0 -> {
                 if (ship_coordinates[x] + ship[length] >= ocean_coordinates.length || ship_coordinates[y] - ship[width] < 0) {
                     return false;
@@ -110,7 +149,7 @@ public class Ships {
                     return false;
                 }
             }
-        }*/
+        }
 
         for (int i = 0; i <= ship[0]; i++) {
             for (int j = 0; j <= ship[1]; j++) {
@@ -118,7 +157,7 @@ public class Ships {
                     return false;
                 }
             }
-        }
+        } */ //trashcode
         return true;
     }
 
