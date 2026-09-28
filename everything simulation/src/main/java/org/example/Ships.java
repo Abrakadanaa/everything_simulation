@@ -10,8 +10,8 @@ public class Ships {
     public static int[] shipyard() {
         //define ship details
         int[] ship = new int[3];
-        int length = (int) (Math.random() * 13) + 1;
-        int width = (int) (Math.random() * 4) + 1;
+        int length = (int) (Math.random() * 8) + 1;
+        int width = (int) (Math.random() * 2) + 1;
         int direction = (int) (Math.random() * 4);
 
         //fill array:
@@ -39,15 +39,86 @@ public class Ships {
         int y = 1;
         int length = 0;
         int width = 1;
+        int direction = 2;
 
         if (openWater != 0) {
             return false;
         }
-        if (ship_coordinates[x] - ship[length] < 0) {return false;}
-        if (ship_coordinates[y] - ship[length] < 0) {return false;}
-        if (ship_coordinates[x] + ship[length] >= ocean_coordinates.length) {return false;}
-        if (ship_coordinates[y] + ship[length] >= ocean_coordinates[0].length) {return false;}
 
+        //check if coordinates and length are okay:
+
+        //0°:
+        if (ship_coordinates[x] + ship[length] >= ocean_coordinates.length) {
+            return false;
+        }
+
+        //90°:
+        if (ship_coordinates[y] + ship[length] >= ocean_coordinates[0].length) {
+            return false;
+        }
+
+        //180°:
+        if (ship_coordinates[x] - ship[length] < 0) {
+            return false;
+        }
+
+        //270°:
+        if (ship_coordinates[y] - ship[length] < 0) {
+            return false;
+        }
+
+
+        //check if coordinates and width are okay:
+        //90°:
+        if (ship_coordinates[x] - ship[width] < 0) {
+            return false;
+        }
+
+        //0°:
+        if (ship_coordinates[y] - ship[width] < 0) {
+            return false;
+        }
+
+        //270°:
+        if (ship_coordinates[x] + ship[width] >= ocean_coordinates.length) {
+            return false;
+        }
+
+        //180°:
+        if (ship_coordinates[y] + ship[width] >= ocean_coordinates[0].length) {
+            return false;
+        }
+
+        /*switch (ship[direction]) {
+            case 0 -> {
+                if (ship_coordinates[x] + ship[length] >= ocean_coordinates.length || ship_coordinates[y] - ship[width] < 0) {
+                    return false;
+                }
+            }
+            case 1 -> {
+                if (ship_coordinates[y] + ship[length] >= ocean_coordinates[0].length && ship_coordinates[x] - ship[width] < 0) {
+                    return false;
+                }
+            }
+            case 2 -> {
+                if (ship_coordinates[x] - ship[length] < 0 && ship_coordinates[y] + ship[width] >= ocean_coordinates[0].length) {
+                    return false;
+                }
+            }
+            case 3 -> {
+                if (ship_coordinates[y] - ship[length] < 0 && ship_coordinates[x] + ship[width] >= ocean_coordinates.length) {
+                    return false;
+                }
+            }
+        }*/
+
+        for (int i = 0; i <= ship[0]; i++) {
+            for (int j = 0; j <= ship[1]; j++) {
+                if (ocean_coordinates[ship_coordinates[x]+i][ship_coordinates[y]+j] != 0) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -58,7 +129,7 @@ public class Ships {
             int[] ship = shipyard();
             int attempt = 0;
             boolean successful = false;
-            while (attempt < 10 && !successful) {
+            while (attempt < 15 && !successful) {
                 int[] ship_coordinates = ship_coordinates(); // x,y
                 boolean aye = marineControl_says_aye(ship, ship_coordinates, ocean);
                 if (aye) {
@@ -104,7 +175,7 @@ public class Ships {
                     }
                 }
                 attempt++;
-                if (attempt >= 10) {
+                if (attempt >= 15) {
                     keep_throwing_ships_at_the_ocean = false;
                     System.out.println(shipcounter + " " + "ships sailing");
                 }
