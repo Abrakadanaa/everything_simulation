@@ -37,8 +37,6 @@ public class Ships {
         int openWater = ocean_coordinates[ship_coordinates[0]][ship_coordinates[1]];
         int x = 0;
         int y = 1;
-        int length = 0;
-        int width = 1;
         int direction = 2;
 
         if (openWater != 0) {
@@ -80,7 +78,6 @@ public class Ships {
 
             }
         }
-
         /*
 
         //check if coordinates and length are okay:
@@ -172,40 +169,25 @@ public class Ships {
                 int[] ship_coordinates = ship_coordinates(); // x,y
                 boolean aye = marineControl_says_aye(ship, ship_coordinates, ocean);
                 if (aye) {
-                    for (int i = -1; i <= ship[0] + 1; i++) {
-                        for (int j = -1; j <= ship[1] + 1; j++) {
-                            switch (ship[2]) {
-                                case 0 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] + i, ship_coordinates[1] + j, -1);
-                                }
-                                case 1 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] - j, ship_coordinates[1] + i, -1);
-                                }
-                                case 2 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] - i, ship_coordinates[1] - j, -1);
-                                }
-                                case 3 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] + j, ship_coordinates[1] - i, -1);
-                                }
-                            }
-                        }
+                    for (int i = -1; i < ship[0]+1; i++) {
+                        drawShipZone(ocean, ship, ship_coordinates, i, -1, -1);
+                        drawShipZone(ocean, ship, ship_coordinates, i, ship[1]+1, -1);
                     }
-                    for (int i = 0; i <= ship[0]; i++) {
-                        for (int j = 0; j <= ship[1]; j++) {
-                            switch (ship[2]) {
-                                case 0 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] + i, ship_coordinates[1] + j, shipcounter);
-                                }
-                                case 1 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] - j, ship_coordinates[1] + i, shipcounter);
-                                }
-                                case 2 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] - i, ship_coordinates[1] - j, shipcounter);
-                                }
-                                case 3 -> {
-                                    out_of_bounds(ocean, ship_coordinates[0] + j, ship_coordinates[1] - i, shipcounter);
-                                }
-                            }
+                    for (int j = 0; j < ship[1]; j++) {
+                        drawShipZone(ocean, ship, ship_coordinates, -1, j, -1);
+                        drawShipZone(ocean, ship, ship_coordinates, ship[0], j, -1);
+
+                    }
+
+                    /*for (int i = -1; i <= ship[0] + 1; i++) {
+                        for (int j = -1; j <= ship[1] + 1; j++) {
+                            drawShipZone(ocean, ship, ship_coordinates, i, j, -1);
+                        }
+                    }*/
+
+                    for (int i = 0; i < ship[0]; i++) {
+                        for (int j = 0; j < ship[1]; j++) {
+                            drawShipZone(ocean, ship, ship_coordinates, i, j, shipcounter);
                         }
                     }
                     successful = true;
@@ -218,6 +200,23 @@ public class Ships {
                     keep_throwing_ships_at_the_ocean = false;
                     System.out.println(shipcounter + " " + "ships sailing");
                 }
+            }
+        }
+    }
+
+    private static void drawShipZone(int[][] ocean, int[] ship, int[] ship_coordinates, int i, int j, int value) {
+        switch (ship[2]) {
+            case 0 -> {
+                out_of_bounds(ocean, ship_coordinates[0] + i, ship_coordinates[1] + j, value);
+            }
+            case 1 -> {
+                out_of_bounds(ocean, ship_coordinates[0] - j, ship_coordinates[1] + i, value);
+            }
+            case 2 -> {
+                out_of_bounds(ocean, ship_coordinates[0] - i, ship_coordinates[1] - j, value);
+            }
+            case 3 -> {
+                out_of_bounds(ocean, ship_coordinates[0] + j, ship_coordinates[1] - i, value);
             }
         }
     }
