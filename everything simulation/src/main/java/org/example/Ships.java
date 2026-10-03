@@ -5,6 +5,7 @@ public class Ships {
     public static void main(String[] args) {
         int[][] ocean = ocean_coordinates();
         throw_ships_into_ocean(ocean);
+        ShipsDrawLau.drawOcean(ocean);
     }
 
     public static int[] shipyard() {
