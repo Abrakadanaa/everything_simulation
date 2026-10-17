@@ -7,8 +7,8 @@ import java.awt.*;
 public class ShipsDrawLau {
     public static void drawOcean(int[][] ocean) {
         try (CodeDraw codeDraw = new CodeDraw(400, 400)) {
-            for (int i = 0; i < 50; i++) {
-                for (int j = 0; j < 50; j++) {
+            for (int i = 0; i < ocean.length; i++) {
+                for (int j = 0; j < ocean[0].length; j++) {
                     int shipValue = ocean[i][j];
                     codeDraw.setColor(getColor(shipValue));
                     codeDraw.fillRectangle(
@@ -19,6 +19,10 @@ public class ShipsDrawLau {
                     codeDraw.drawPoint(
                             translateCoordinate(i),
                             translateCoordinate(j));
+                    if (shipValue > 0) {
+                        codeDraw.setColor(Color.WHITE);
+                        codeDraw.drawText(translateCoordinate(i), translateCoordinate(j), shipValue+"");
+                    }
                 }
             }
             codeDraw.show(100000);
