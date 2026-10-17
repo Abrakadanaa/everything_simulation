@@ -17,33 +17,27 @@ public class Ships {
         boolean keep_throwing_ships_at_the_ocean = true;
         int shipcounter = 1;
         while (keep_throwing_ships_at_the_ocean) {
-            int[] ship = shipyard();
+            Ship ship = shipyard();
             int attempt = 0;
             boolean successful = false;
             while (attempt < 15 && !successful) {
                 int[] ship_coordinates = ship_coordinates(); // x,y
                 boolean aye = marineControl_says_aye(ship, ship_coordinates, ocean);
                 if (aye) {
-                    for (int i = 0; i < ship[0]; i++) {
-                        for (int j = 0; j < ship[1]; j++) {
+                    for (int i = 0; i < ship.length; i++) {
+                        for (int j = 0; j < ship.width; j++) {
                             drawShipZone(ocean, ship, ship_coordinates, i, j, shipcounter);
                         }
                     }
-                    for (int i = -1; i < ship[0]+1; i++) {
+                    for (int i = -1; i < ship.length + 1; i++) {
                         drawShipZone(ocean, ship, ship_coordinates, i, -1, -1);
-                        drawShipZone(ocean, ship, ship_coordinates, i, ship[1], -1);
+                        drawShipZone(ocean, ship, ship_coordinates, i, ship.width, -1);
                     }
-                    for (int j = 0; j < ship[1]; j++) {
+                    for (int j = 0; j < ship.width; j++) {
                         drawShipZone(ocean, ship, ship_coordinates, -1, j, -1);
-                        drawShipZone(ocean, ship, ship_coordinates, ship[0], j, -1);
+                        drawShipZone(ocean, ship, ship_coordinates, ship.length, j, -1);
 
                     }
-
-                    /*for (int i = -1; i <= ship[0] + 1; i++) {
-                        for (int j = -1; j <= ship[1] + 1; j++) {
-                            drawShipZone(ocean, ship, ship_coordinates, i, j, -1);
-                        }
-                    }*/
 
                     successful = true;
                     if (successful) {
@@ -59,17 +53,15 @@ public class Ships {
         }
     }
 
-    public static int[] shipyard() {
-        //define ship details
-        int[] ship = new int[3];
-        int length = (int) (Math.random() * 15) + 1;
-        int width = (int) (Math.random() * 4) + 1;
-        int direction = (int) (Math.random() * 4);
+    public static Ship shipyard() {
 
-        //fill array:
-        ship[0] = length;
-        ship[1] = width;
-        ship[2] = direction;
+        //define ship details
+
+        Ship ship = new Ship();
+        ship.length = (int) (Math.random() * 15) + 1;
+        ship.width = (int) (Math.random() * 4) + 1;
+        ship.direction = (int) (Math.random() * 4);
+
         return ship;
     }
 
@@ -80,18 +72,17 @@ public class Ships {
         return coordinates;
     }
 
-    public static boolean marineControl_says_aye(int[] ship, int[] ship_coordinates, int[][] ocean_coordinates) {
+    public static boolean marineControl_says_aye(Ship ship, int[] ship_coordinates, int[][] ocean_coordinates) {
         final int x = 0;
         final int y = 1;
-        final int direction = 2;
 
-        for (int i = 0; i < ship[0]; i++) {
-            for (int j = 0; j < ship[1]; j++) {
+        for (int i = 0; i < ship.length; i++) {
+            for (int j = 0; j < ship.length; j++) {
 
                 int is_x_free = 0;
                 int is_y_free = 0;
 
-                switch (ship[direction]) {
+                switch (ship.direction) {
                     case 0 -> {
                         is_x_free = ship_coordinates[x] + i;
                         is_y_free = ship_coordinates[y] + j;
@@ -126,8 +117,8 @@ public class Ships {
         return true;
     }
 
-    private static void drawShipZone(int[][] ocean, int[] ship, int[] ship_coordinates, int i, int j, int value) {
-        switch (ship[2]) {
+    private static void drawShipZone(int[][] ocean, Ship ship, int[] ship_coordinates, int i, int j, int value) {
+        switch (ship.width) {
             case 0 -> {
                 out_of_bounds(ocean, ship_coordinates[0] + i, ship_coordinates[1] + j, value);
             }
