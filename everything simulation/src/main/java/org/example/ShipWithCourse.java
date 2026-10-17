@@ -1,7 +1,14 @@
 package org.example;
 
-public class ShipWithCourse {
-    public Ship ship;
-    public BasicCompassDirection direction;
-    public Vector2D position;
+class ShipWithCourse {
+    Ship ship;
+    BasicCompassDirection direction;
+    Vector2D position;
+
+    ShipWithCourse(Ship ship, BasicCompassDirection direction, Vector2D position) {
+        this.ship = ship;
+        this.direction = direction;
+        this.position = position;
+    }
+
 }

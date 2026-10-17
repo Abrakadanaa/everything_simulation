@@ -5,7 +5,11 @@ public class Ships {
     public static void main(String[] args) {
         int[][] ocean = ocean_coordinates();
         throw_ships_into_ocean(ocean);
+
+
+
         ShipsDrawLau.drawOcean(ocean);
+
     }
 
     public static int[][] ocean_coordinates() {
@@ -13,91 +17,86 @@ public class Ships {
         return ocean;
     }
 
+    public static boolean try_place_ship(int[][] ocean, Ship ship, int shipID) {
+        Vector2D pos = new Vector2D((int) (Math.random() * 50), (int) (Math.random() * 50)); // x,y
+        ShipWithCourse shipWithCourse = new ShipWithCourse(ship, BasicCompassDirection.fromInt((int) (Math.random() * 3)), pos);
+        boolean aye = marineControl_says_aye(shipWithCourse, ocean);
+        if (aye) {
+            for (int i = 0; i < ship.length; i++) {
+                for (int j = 0; j < ship.width; j++) {
+                    drawShipZone(ocean, shipWithCourse.direction, shipWithCourse.position, i, j, shipID);
+                }
+            }
+            for (int i = -1; i < ship.length + 1; i++) {
+                drawShipZone(ocean, shipWithCourse.direction, shipWithCourse.position, i, -1, -1);
+                drawShipZone(ocean, shipWithCourse.direction, shipWithCourse.position, i, ship.width, -1);
+            }
+            for (int j = 0; j < ship.width; j++) {
+                drawShipZone(ocean, shipWithCourse.direction, shipWithCourse.position, -1, j, -1);
+                drawShipZone(ocean, shipWithCourse.direction, shipWithCourse.position, ship.length, j, -1);
+            }
+        }
+        return aye;
+    }
+
+
     public static void throw_ships_into_ocean(int[][] ocean) {
         boolean keep_throwing_ships_at_the_ocean = true;
-        int shipcounter = 1;
+        int shipCounter = 1;
         while (keep_throwing_ships_at_the_ocean) {
             Ship ship = shipyard();
             int attempt = 0;
             boolean successful = false;
             while (attempt < 15 && !successful) {
-                int[] ship_coordinates = ship_coordinates(); // x,y
-                boolean aye = marineControl_says_aye(ship, ship_coordinates, ocean);
-                if (aye) {
-                    for (int i = 0; i < ship.length; i++) {
-                        for (int j = 0; j < ship.width; j++) {
-                            drawShipZone(ocean, ship, ship_coordinates, i, j, shipcounter);
-                        }
-                    }
-                    for (int i = -1; i < ship.length + 1; i++) {
-                        drawShipZone(ocean, ship, ship_coordinates, i, -1, -1);
-                        drawShipZone(ocean, ship, ship_coordinates, i, ship.width, -1);
-                    }
-                    for (int j = 0; j < ship.width; j++) {
-                        drawShipZone(ocean, ship, ship_coordinates, -1, j, -1);
-                        drawShipZone(ocean, ship, ship_coordinates, ship.length, j, -1);
-
-                    }
-
-                    successful = true;
+                successful = try_place_ship(ocean, ship, shipCounter);
                     if (successful) {
-                        shipcounter++;
+                        shipCounter++;
                     }
-                }
-                attempt++;
+                attempt++;}
+
                 if (attempt >= 15) {
                     keep_throwing_ships_at_the_ocean = false;
-                    System.out.println(shipcounter + " " + "ships sailing");
+                    System.out.println(shipCounter + " " + "ships sailing");
                 }
             }
         }
-    }
+
 
     public static Ship shipyard() {
 
         //define ship details
 
-        Ship ship = new Ship();
-        ship.length = (int) (Math.random() * 15) + 1;
-        ship.width = (int) (Math.random() * 4) + 1;
-        ship.direction = (int) (Math.random() * 4);
+        Ship ship = new Ship(((int) (Math.random() * 15) + 1), ((int) (Math.random() * 4) + 1));
 
         return ship;
     }
 
-    public static int[] ship_coordinates() {
-        int[] coordinates = new int[2];
-        coordinates[0] = (int) (Math.random() * 50);
-        coordinates[1] = (int) (Math.random() * 50);
-        return coordinates;
-    }
+    public static boolean marineControl_says_aye(ShipWithCourse ship, int[][] ocean_coordinates) {
+        //final int x = 0;
+        //final int y = 1;
 
-    public static boolean marineControl_says_aye(Ship ship, int[] ship_coordinates, int[][] ocean_coordinates) {
-        final int x = 0;
-        final int y = 1;
-
-        for (int i = 0; i < ship.length; i++) {
-            for (int j = 0; j < ship.width; j++) {
+        for (int i = 0; i < ship.ship.length; i++) {
+            for (int j = 0; j < ship.ship.width; j++) {
 
                 int is_x_free = 0;
                 int is_y_free = 0;
 
                 switch (ship.direction) {
-                    case 0 -> {
-                        is_x_free = ship_coordinates[x] + i;
-                        is_y_free = ship_coordinates[y] + j;
+                    case EAST -> {
+                        is_x_free = ship.position.x + i;
+                        is_y_free = ship.position.y + j;
                     }
-                    case 1 -> {
-                        is_x_free = ship_coordinates[x] - j;
-                        is_y_free = ship_coordinates[y] + i;
+                    case NORTH -> {
+                        is_x_free = ship.position.x - j;
+                        is_y_free = ship.position.y + i;
                     }
-                    case 2 -> {
-                        is_x_free = ship_coordinates[x] - i;
-                        is_y_free = ship_coordinates[y] - j;
+                    case WEST -> {
+                        is_x_free = ship.position.x - i;
+                        is_y_free = ship.position.y - j;
                     }
-                    case 3 -> {
-                        is_x_free = ship_coordinates[x] + j;
-                        is_y_free = ship_coordinates[y] - i;
+                    case SOUTH -> {
+                        is_x_free = ship.position.x + j;
+                        is_y_free = ship.position.y - i;
                     }
                 }
 
@@ -111,25 +110,24 @@ public class Ships {
                 if (ocean_coordinates[is_x_free][is_y_free] != 0) {
                     return false;
                 }
-
             }
         }
         return true;
     }
 
-    private static void drawShipZone(int[][] ocean, Ship ship, int[] ship_coordinates, int i, int j, int value) {
-        switch (ship.direction) {
-            case 0 -> {
-                out_of_bounds(ocean, ship_coordinates[0] + i, ship_coordinates[1] + j, value);
+    private static void drawShipZone(int[][] ocean, BasicCompassDirection direction, Vector2D base_coordinates, int i, int j, int value) {
+        switch (direction) {
+            case EAST -> {
+                out_of_bounds(ocean, base_coordinates.x + i, base_coordinates.y + j, value);
             }
-            case 1 -> {
-                out_of_bounds(ocean, ship_coordinates[0] - j, ship_coordinates[1] + i, value);
+            case NORTH -> {
+                out_of_bounds(ocean, base_coordinates.x - j, base_coordinates.y + i, value);
             }
-            case 2 -> {
-                out_of_bounds(ocean, ship_coordinates[0] - i, ship_coordinates[1] - j, value);
+            case WEST -> {
+                out_of_bounds(ocean, base_coordinates.x - i, base_coordinates.y - j, value);
             }
-            case 3 -> {
-                out_of_bounds(ocean, ship_coordinates[0] + j, ship_coordinates[1] - i, value);
+            case SOUTH -> {
+                out_of_bounds(ocean, base_coordinates.x + j, base_coordinates.y - i, value);
             }
         }
     }
@@ -139,4 +137,6 @@ public class Ships {
             ocean[x][y] = value;
         }
     }
+
+
 }
