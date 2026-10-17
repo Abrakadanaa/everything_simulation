@@ -77,7 +77,7 @@ public class Ships {
         final int y = 1;
 
         for (int i = 0; i < ship.length; i++) {
-            for (int j = 0; j < ship.length; j++) {
+            for (int j = 0; j < ship.width; j++) {
 
                 int is_x_free = 0;
                 int is_y_free = 0;
@@ -118,7 +118,7 @@ public class Ships {
     }
 
     private static void drawShipZone(int[][] ocean, Ship ship, int[] ship_coordinates, int i, int j, int value) {
-        switch (ship.width) {
+        switch (ship.direction) {
             case 0 -> {
                 out_of_bounds(ocean, ship_coordinates[0] + i, ship_coordinates[1] + j, value);
             }
