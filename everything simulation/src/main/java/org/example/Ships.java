@@ -4,11 +4,24 @@ public class Ships {
 
     public static void main(String[] args) {
         int[][] ocean = ocean_coordinates();
-        throw_ships_into_ocean(ocean);
 
+        //throw_ships_into_ocean(ocean);
+
+        generate_ships(ocean, Ship.carrier(), 1);
+        generate_ships(ocean, Ship.battleShip(), 2);
+        generate_ships(ocean, Ship.cruiser(), 3);
+        generate_ships(ocean, Ship.submarine(), 4);
+        generate_ships(ocean, Ship.destroyer(), 5);
 
         ShipsDrawLau.drawOcean(ocean);
 
+    }
+
+
+    public static void generate_ships(int[][] ocean, Ship ship, int numberOfShips) {
+        for (int i = 0; i < numberOfShips; i++) {
+            definitely_throw_ship_into_ocean(ocean, ship, ship.length);
+        }
     }
 
     public static int[][] ocean_coordinates() {
@@ -62,7 +75,7 @@ public class Ships {
     }
 
     // TODO @Dana what does this do?
-    public void definitely_throw_ship_into_ocean(int[][] ocean, Ship ship, int shipID) {
+    public static void definitely_throw_ship_into_ocean(int[][] ocean, Ship ship, int shipID) {
         boolean success;
         do {
             success = try_place_ship(ocean, ship, shipID);
