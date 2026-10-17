@@ -61,6 +61,7 @@ public class Ships {
         }
     }
 
+    // TODO @Dana what does this do?
     public void definitely_throw_ship_into_ocean(int[][] ocean, Ship ship, int shipID) {
         boolean success;
         do {
