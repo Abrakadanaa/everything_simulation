@@ -7,7 +7,6 @@ public class Ships {
         throw_ships_into_ocean(ocean);
 
 
-
         ShipsDrawLau.drawOcean(ocean);
 
     }
@@ -49,18 +48,25 @@ public class Ships {
             boolean successful = false;
             while (attempt < 15 && !successful) {
                 successful = try_place_ship(ocean, ship, shipCounter);
-                    if (successful) {
-                        shipCounter++;
-                    }
-                attempt++;}
-
-                if (attempt >= 15) {
-                    keep_throwing_ships_at_the_ocean = false;
-                    System.out.println(shipCounter + " " + "ships sailing");
+                if (successful) {
+                    shipCounter++;
                 }
+                attempt++;
+            }
+
+            if (attempt >= 15) {
+                keep_throwing_ships_at_the_ocean = false;
+                System.out.println(shipCounter + " " + "ships sailing");
             }
         }
+    }
 
+    public void definitely_throw_ship_into_ocean(int[][] ocean, Ship ship, int shipID) {
+        boolean success;
+        do {
+            success = try_place_ship(ocean, ship, shipID);
+        } while (!success);
+    }
 
     public static Ship shipyard() {
 
